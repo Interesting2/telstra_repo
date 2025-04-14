@@ -14,6 +14,7 @@ import org.springframework.http.ResponseEntity;
 import au.com.telstra.simcardactivator.dto.SimActivationRequest;
 import au.com.telstra.simcardactivator.dto.SimActivationResponse;
 import au.com.telstra.simcardactivator.entities.SimCard;
+
 import reactor.core.publisher.Mono;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -77,17 +78,5 @@ public class SimActivationController {
         }, error -> {
             System.out.println("Error while contacting the actuator: " + error.getMessage());
         });
-        // return response.flatMap(responseBody -> {
-        //     if (responseBody.isSuccess()) {
-        //         System.out.println("SIM card activation successful.");
-        //         return Mono.just(ResponseEntity.ok("SIM card activation successful."));
-        //     } else {
-        //         System.out.println("SIM card activation failed.");
-        //         return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("SIM card activation failed."));
-        //     }
-        // }).onErrorResume(error -> {
-        //     System.out.println("Error while contacting the actuator: " + error.getMessage());
-        //     return Mono.just(ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error.getMessage()));
-        // });
     }
 }
