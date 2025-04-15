@@ -35,10 +35,10 @@ public class SimCardActivatorStepDefinitions {
     private String iccid;
 
 
-    @Before
-    public void cleanDatabase() {
-        simCardRepository.deleteAll();
-    }
+    // @Before
+    // public void cleanDatabase() {
+    //     simCardRepository.deleteAll();
+    // }
     
     @Given("I have a Sim Card with iccid is {string}")
     public void sim_card_iccid_is(String iccid) {

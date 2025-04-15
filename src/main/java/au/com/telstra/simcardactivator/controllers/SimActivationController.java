@@ -50,33 +50,31 @@ public class SimActivationController {
         String actuatorUrl = "http://localhost:8444/actuate";
 
         // Send POST request using WebClient to actuator
-        Mono<SimActivationResponse> response = webClientBuilder.build()
+        SimActivationResponse response = webClientBuilder.build()
                 .post()
                 .uri(actuatorUrl)
                 .bodyValue(new SimActivationRequest(request.getIccid())) 
                 .retrieve()
-                .bodyToMono(SimActivationResponse.class);
+                .bodyToMono(SimActivationResponse.class)
+                .block();
         
         System.out.println("Post Request sent");
 
         // shoot a request and wait for the result
-        response.subscribe(responseBody -> {
-            boolean success = responseBody.isSuccess();
+        if (response != null && response.isSuccess()) {
+            System.out.println("SIM card activation successful.");
+        } else {
+            System.out.println("SIM card activation failed.");
+        }
 
-            if (success) {
-                System.out.println("SIM card activation successful.");
-            } else {
-                System.out.println("SIM card activation failed.");
-            }
-            SimCard newSimCardRecord = new SimCard(
-                request.getIccid(),
-                request.getCustomerEmail(),
-                success
-            );
-            simCardRepository.save(newSimCardRecord); // save it to database
-            System.out.println("Saved new sim card record to database");
-        }, error -> {
-            System.out.println("Error while contacting the actuator: " + error.getMessage());
-        });
+
+        SimCard newSimCardRecord = new SimCard(
+            request.getIccid(),
+            request.getCustomerEmail(),
+            response != null && response.isSuccess()
+        );
+        simCardRepository.save(newSimCardRecord);
+        System.out.println("Saved new sim card record to database");
+        
     }
 }
