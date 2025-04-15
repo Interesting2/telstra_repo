@@ -2,7 +2,6 @@ package stepDefinitions;
 
 import au.com.telstra.simcardactivator.SimCardActivator;
 import au.com.telstra.simcardactivator.dto.SimActivationRequest;
-import au.com.telstra.simcardactivator.repositories.SimCardRepository;
 
 import io.cucumber.spring.CucumberContextConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import au.com.telstra.simcardactivator.entities.SimCard;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.When;
 import io.cucumber.java.en.Then;
@@ -29,16 +27,8 @@ public class SimCardActivatorStepDefinitions {
     @Autowired
     private TestRestTemplate restTemplate;
 
-    @Autowired
-    private SimCardRepository simCardRepository;
-
     private String iccid;
 
-
-    // @Before
-    // public void cleanDatabase() {
-    //     simCardRepository.deleteAll();
-    // }
     
     @Given("I have a Sim Card with iccid is {string}")
     public void sim_card_iccid_is(String iccid) {

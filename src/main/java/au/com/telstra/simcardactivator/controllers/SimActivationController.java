@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.util.logging.Logger;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -15,7 +16,6 @@ import au.com.telstra.simcardactivator.dto.SimActivationRequest;
 import au.com.telstra.simcardactivator.dto.SimActivationResponse;
 import au.com.telstra.simcardactivator.entities.SimCard;
 
-import reactor.core.publisher.Mono;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import au.com.telstra.simcardactivator.repositories.SimCardRepository;
@@ -26,11 +26,16 @@ import java.util.Optional;
 @RequestMapping("/api/sim")
 public class SimActivationController {
 
-    @Autowired
-    private WebClient.Builder webClientBuilder;
+    Logger logger = Logger.getLogger(getClass().getName());
 
-    @Autowired
-    private SimCardRepository simCardRepository;
+    private final WebClient.Builder webClientBuilder;
+    private final SimCardRepository simCardRepository;
+
+    // Constructor injection
+    public SimActivationController(WebClient.Builder webClientBuilder, SimCardRepository simCardRepository) {
+        this.webClientBuilder = webClientBuilder;
+        this.simCardRepository = simCardRepository;
+    }
 
     @GetMapping("/query")
     public ResponseEntity<SimCard> getSimCardRecordById(@RequestParam Long simCardId) {
@@ -58,13 +63,14 @@ public class SimActivationController {
                 .bodyToMono(SimActivationResponse.class)
                 .block();
         
-        System.out.println("Post Request sent");
+        logger.info("Post Request sent");
+
 
         // shoot a request and wait for the result
         if (response != null && response.isSuccess()) {
-            System.out.println("SIM card activation successful.");
+            logger.info("SIM card activation successful.");
         } else {
-            System.out.println("SIM card activation failed.");
+            logger.info("SIM card activation failed.");
         }
 
 
@@ -74,7 +80,7 @@ public class SimActivationController {
             response != null && response.isSuccess()
         );
         simCardRepository.save(newSimCardRecord);
-        System.out.println("Saved new sim card record to database");
+        logger.info("Saved new sim card record to database");
         
     }
 }
